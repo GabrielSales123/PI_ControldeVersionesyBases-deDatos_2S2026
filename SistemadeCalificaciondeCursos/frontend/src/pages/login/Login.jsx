@@ -12,11 +12,11 @@ function Login() {
           <input type="text" placeholder="Registro Académico" />
         <input type="password" placeholder="Contraseña" />
         <p>
-          ¿No tienes una cuenta? <a href="/register">Registrate</a>
+          ¿No tienes una cuenta? <a href="./registro">Registrate</a>
           <br />
-          ¿Olvidaste tu contraseña? <a href="/forgot-password">Recuperar</a>
+          ¿Olvidaste tu contraseña? <a href="./forget">Recuperar</a>
         </p>
-        <button type="submit">Login</button>
+        <button type="submit">Iniciar Sesión</button>
       </form>
     </div>
     </div>
