@@ -4,6 +4,8 @@ import Registro from "./pages/registro/registro";
 import Forget from "./pages/forget/forget";
 import Home from "./pages/home/home";
 import CrearPost from "./pages/crearPost/crearPost";
+import Comentarios from "./pages/comentarios/comentarios";
+import Profile from "./pages/profile/profile";
 
 import "./App.css";
 
@@ -16,6 +18,8 @@ function App() {
         <Route path="/forget" element={<Forget />} />
         <Route path="/home" element={<Home />} />
         <Route path="/crearPost" element={<CrearPost />} />
+        <Route path="/comentarios" element={<Comentarios />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

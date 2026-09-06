@@ -5,6 +5,7 @@ function Home() {
     const navigate = useNavigate();
     const publicaciones = [
         {
+            id: 1,
             usuario: "Juan Pérez",
             curso: "Programación 1",
             catedratico: "Juan Lopez",
@@ -13,6 +14,7 @@ function Home() {
             comentarios: 3
         },
         {
+            id: 2,
             usuario: "María López",
             curso: "Matemática 1",
             catedratico: "Ing Garcia",
@@ -21,6 +23,7 @@ function Home() {
             comentarios: 5
         },
         {
+            id: 3,
             usuario: "María López",
             curso: "Matemática 1",
             catedratico: "Ing Garcia",
@@ -29,6 +32,7 @@ function Home() {
             comentarios: 5
         },
         {
+            id: 4,
             usuario: "María López",
             curso: "Matemática 1",
             catedratico: "Ing Garcia",
@@ -45,7 +49,7 @@ function Home() {
             <header className="navbar">
                 <h1>Sistema de Calificación de Cursos</h1>
 
-                <button className="perfil-btn" >
+                <button className="perfil-btn" onClick={() => navigate("/profile")}>
                     Perfil
                 </button>
             </header>
@@ -89,8 +93,8 @@ function Home() {
 
                     <h2>PUBLICACIONES</h2>
 
-                    {publicaciones.map((publicacion, index) => (
-                        <article className="publicacion" key={index}>
+                    {publicaciones.map((publicacion) => (
+                        <article className="publicacion" key={publicacion.id}>
 
                             <h3>{publicacion.usuario}</h3>
 
@@ -111,8 +115,11 @@ function Home() {
                             <div className="publicacion-footer">
                                 <span>{publicacion.fecha}</span>
 
-                                <button>
-                                    💬 {publicacion.comentarios} comentarios
+                                <button onClick={() => navigate("/comentarios", {
+                                 state: { publicacion: publicacion }
+                                })
+                                }>
+                                💬 {publicacion.comentarios} comentarios
                                 </button>
                             </div>
 
