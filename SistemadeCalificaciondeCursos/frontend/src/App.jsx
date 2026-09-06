@@ -3,6 +3,7 @@ import Login from "./pages/login/Login";
 import Registro from "./pages/registro/registro";
 import Forget from "./pages/forget/forget";
 import Home from "./pages/home/home";
+import CrearPost from "./pages/crearPost/crearPost";
 
 import "./App.css";
 
@@ -14,6 +15,7 @@ function App() {
         <Route path="/registro" element={<Registro />} />
         <Route path="/forget" element={<Forget />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/crearPost" element={<CrearPost />} />
       </Routes>
     </BrowserRouter>
   );

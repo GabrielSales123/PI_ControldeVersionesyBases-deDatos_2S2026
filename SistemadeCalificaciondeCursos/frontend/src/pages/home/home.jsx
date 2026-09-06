@@ -1,6 +1,8 @@
 import "./home.css";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+    const navigate = useNavigate();
     const publicaciones = [
         {
             usuario: "Juan Pérez",
@@ -43,7 +45,7 @@ function Home() {
             <header className="navbar">
                 <h1>Sistema de Calificación de Cursos</h1>
 
-                <button className="perfil-btn">
+                <button className="perfil-btn" >
                     Perfil
                 </button>
             </header>
@@ -76,7 +78,7 @@ function Home() {
                 </div>
 
                 {/* Crear publicación */}
-                <button className="crear-btn">
+                <button className="crear-btn" onClick={() => navigate("/crearPost")}>
                     + Crear publicación
                 </button>
 

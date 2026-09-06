@@ -9,7 +9,7 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Temporalmente no verificamos BD
+    // Temporalmente no se verifica
     navigate("/home");
   }
   
