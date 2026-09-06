@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #1E3A5F;
+    background-color: rgb(59, 26, 112);
 }
 .forget-card {
     width: 350px;
