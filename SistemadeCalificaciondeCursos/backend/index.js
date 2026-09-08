@@ -81,26 +81,92 @@ app.post('/login', async (req,res)=> {
 });
 
 app.get('/perfil', async (req, res) => {
-  console.log(req.cookies)
   const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).send("No autorizado");
+
+  decoded = validaciones.validarToken({ req, res });
+  console.log(`Decoded: ${decoded}`);
+  if (!decoded) {
+    res.status(401).send("Token invalido o expirado");
+    return;
   }
+  carnet = decoded.carnet;
   try {
-    const decoded = jwt.verify(token, SECRET_JWT_KEY); 
-    carnet = decoded.carnet;
-    const [rows] = await pool.query('SELECT * FROM usuarios WHERE carnet = ?', [carnet]);
-    if (rows.length == 0) {
-      res.status(404).send("Usuario no encontrado");
-    } else {
-      const usuario = rows[0];
-      res.status(200).json({ nombres: usuario.nombres, apellidos: usuario.apellidos, carnet: usuario.carnet });
+      const [rows] = await pool.query('SELECT * FROM usuarios WHERE carnet = ?', [carnet]);
+      if (rows.length == 0) {
+        res.status(404).send("Usuario no encontrado");
+        return;
+      } 
+      else {
+        const usuario = rows[0];
+        res.status(200).json({ nombres: usuario.nombres, apellidos: usuario.apellidos, carnet: usuario.carnet });
+        return;
+      }
     }
-  } catch (error) {
-    console.error(error);
+  catch (error) {
     res.status(500).send("Error al obtener perfil");
   }
 });
 
 
-app.get('/')
+
+app.post('/publicaciones', async (req, res) => {
+  const {contenido, catedratico} = req.body;
+  if (contenido && catedratico) {
+    try{
+      decoded = validaciones.validarToken({ req, res });
+      carnet = decoded.carnet;
+      const [rows] = await pool.query('SELECT * FROM usuarios WHERE carnet = ?', [carnet]);
+      if (rows.length == 0) {
+        res.status(404).send("Usuario no encontrado");
+      } else {
+        const usuario = rows[0];
+        await pool.query('INSERT INTO publicaciones (contenido, catedratico_id, usuario_id) VALUES (?, ?, ?)', [contenido, catedratico, usuario.id]);
+        res.status(201).send("Publicacion creada")
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error al crear publicacion");
+    }
+  }
+    
+})
+
+app.post('/publicaciones/:id/comentarios/', async (req, res) => {
+  id_publicacion = req.params.id
+  const {contenido} = req.body;
+  if (contenido) {
+    try{
+      
+      decoded = validaciones.validarToken({ req, res });
+      carnet = decoded.carnet;
+      const [rows] = await pool.query('SELECT * FROM usuarios WHERE carnet = ?', [carnet]);
+      if (rows.length == 0) {
+        res.status(404).send("Usuario no encontrado");
+      } else {
+        const usuario = rows[0];
+        await pool.query('INSERT INTO comentarios (contenido, publicacion_id, usuario_id) VALUES (?, ?, ?)', [contenido, id_publicacion, usuario.id]);
+        res.status(201).send("Comentario creado")
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error al crear comentario");
+    }
+  }
+})
+
+app.post('/aprobar_curso', async (req, res) => {
+  const {curso_id} = req.body;
+  if (curso_id) {
+    try{
+      validaciones.validarToken({ req, res });
+      await pool.query('INSERT INTO cursos_aprobados (usuario_id, curso_id) VALUES (?,?)'   [decoded.id, curso_id]);
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).send("Error al aprobar curso");
+    }
+  }
+  else {
+    res.status(400).send("ID de curso no proporcionado");
+  }
+})
