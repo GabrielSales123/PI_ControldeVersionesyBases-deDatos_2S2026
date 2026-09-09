@@ -52,10 +52,10 @@ export const editarPerfil = async (req, res) => {
     return;
   }
   const carnet = decoded.carnet;
-  const { nombres, apellidos, contrasena } = req.body;
+  const { nombres, apellidos, correo, contrasena } = req.body;
 
-  if (!nombres || !apellidos) {
-    res.status(400).send("Nombres o apellidos son requeridos");
+  if (!nombres || !apellidos || !correo) {
+    res.status(400).send("Nombres, apellidos y correo son requeridos");
     return;
   }
 
@@ -68,9 +68,9 @@ export const editarPerfil = async (req, res) => {
 
     if (contrasena) {
       const hashedPassword = await bcrypt.hash(contrasena, SALT_ROUNDS);
-      await pool.query('UPDATE usuarios SET nombres = ?, apellidos = ?, contrasena = ? WHERE carnet = ?', [nombres, apellidos, hashedPassword, carnet]);
+      await pool.query('UPDATE usuarios SET nombres = ?, apellidos = ?, correo = ?, contrasena = ? WHERE carnet = ?', [nombres, apellidos, correo, hashedPassword, carnet]);
     } else {
-      await pool.query('UPDATE usuarios SET nombres = ?, apellidos = ? WHERE carnet = ?', [nombres, apellidos, carnet]);
+      await pool.query('UPDATE usuarios SET nombres = ?, apellidos = ?, correo = ? WHERE carnet = ?', [nombres, apellidos, correo, carnet]);
     }
 
     res.status(200).send("Perfil actualizado exitosamente");

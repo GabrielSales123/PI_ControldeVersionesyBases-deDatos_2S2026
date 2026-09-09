@@ -6,6 +6,7 @@ import Home from "./pages/home/home";
 import CrearPost from "./pages/crearPost/crearPost";
 import Comentarios from "./pages/comentarios/comentarios";
 import Profile from "./pages/profile/profile";
+import EditProfile from "./pages/edit-profile/edit-profile";
 
 import "./App.css";
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/crearPost" element={<CrearPost />} />
         <Route path="/comentarios" element={<Comentarios />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
       </Routes>
     </BrowserRouter>
   );

@@ -58,7 +58,7 @@ function Profile() {
             <span>{perfil.correo || "No disponible"}</span>
         </div>
 
-        <button className="editar-btn">
+        <button className="editar-btn" onClick={() => navigate("/edit-profile")}>
             Editar perfil
         </button>
     </section>
@@ -74,10 +74,6 @@ function Profile() {
         <p className="total-creditos">
             <strong>Total de créditos:</strong> {perfil.total_creditos}
         </p>
-
-        <button className="agregar-btn">
-            + Agregar curso
-        </button>
     </section>
 
 </main>

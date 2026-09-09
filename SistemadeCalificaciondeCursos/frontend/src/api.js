@@ -33,5 +33,7 @@ export const api = {
   getProfile: () => request("/perfil"),
   updateProfile: (data) => request("/perfil", { method: "PUT", body: JSON.stringify(data) }),
   getCourses: () => request("/cursos"),
+  approveCourse: (curso_id) => request("/aprobar_curso", { method: "POST", body: JSON.stringify({ curso_id }) }),
+  removeApprovedCourse: (curso_id) => request(`/eliminar/${curso_id}`, { method: "DELETE" }),
   getProfessors: () => request("/catedraticos")
 };
