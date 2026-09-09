@@ -1,5 +1,7 @@
 
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { api } from "../../api";
 import "./comentarios.css";
 
 function Comentarios() {
@@ -9,6 +11,27 @@ function Comentarios() {
 
     // Se recibe la publicacion
     const publicacion = location.state?.publicacion;
+    const [comentarios, setComentarios] = useState([]);
+    const [contenido, setContenido] = useState("");
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        if (!publicacion?.id) return;
+        api.getComments(publicacion.id)
+            .then(setComentarios)
+            .catch((requestError) => setError(requestError.message));
+    }, [publicacion?.id]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await api.createComment(publicacion.id, { contenido });
+            setContenido("");
+            setComentarios(await api.getComments(publicacion.id));
+        } catch (requestError) {
+            setError(requestError.message);
+        }
+    };
 
 
     // Si alguien entra directamente a la URL
@@ -70,51 +93,35 @@ function Comentarios() {
             {/* Sección de comentarios */}
             <section className="lista-comentarios">
 
-                <h2>
-                    💬 {publicacion.comentarios} comentarios
-                </h2>
-
-
-                {/* Comentarios temporales */}
-
-                <div className="comentario">
-
-                    <h4>Pedro García</h4>
-
-                    <p>
-                        Estoy de acuerdo con esta opinión.
-                    </p>
-
-                </div>
-
-
-                <div className="comentario">
-
-                    <h4>Ana Martínez</h4>
-
-                    <p>
-                        A mí también me pareció interesante el curso.
-                    </p>
-
-                </div>
+                <h2>💬 {comentarios.length} comentarios</h2>
+                {error && <p role="alert">{error}</p>}
+                {comentarios.map((comentario) => (
+                    <div className="comentario" key={comentario.id}>
+                        <h4>{comentario.autor_nombres} {comentario.autor_apellidos}</h4>
+                        <p>{comentario.contenido}</p>
+                    </div>
+                ))}
 
             </section>
 
 
             {/* Agregar comentario */}
 
-            <section className="agregar-comentario">
+            <form className="agregar-comentario" onSubmit={handleSubmit}>
 
                 <h3>Agregar comentario</h3>
 
                 <textarea
                     placeholder="Escribe un comentario..."
+                    value={contenido}
+                    onChange={(e) => setContenido(e.target.value)}
+                    required
                 />
-                <button>
+                <button type="submit">
                     Publicar comentario
                 </button>
 
-            </section>
+            </form>
 
         </div>
     );

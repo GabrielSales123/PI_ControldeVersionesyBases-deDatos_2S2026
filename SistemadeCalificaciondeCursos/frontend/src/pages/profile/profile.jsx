@@ -1,8 +1,21 @@
 import "./profile.css";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../api";
 
 function Profile() {
     const navigate = useNavigate(); 
+    const [perfil, setPerfil] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        api.getProfile()
+            .then(setPerfil)
+            .catch((requestError) => setError(requestError.message));
+    }, []);
+
+    if (error) return <div className="profile"><p role="alert">{error}</p><button onClick={() => navigate("/")}>Iniciar sesión</button></div>;
+    if (!perfil) return <div className="profile"><p>Cargando perfil...</p></div>;
     
     return (
         <div className="profile">
@@ -27,22 +40,22 @@ function Profile() {
 
         <div className="dato">
             <strong>Registro Académico:</strong>
-            <span>202012345</span>
+            <span>{perfil.carnet}</span>
         </div>
 
         <div className="dato">
             <strong>Nombres:</strong>
-            <span>Prueba</span>
+            <span>{perfil.nombres}</span>
         </div>
 
         <div className="dato">
             <strong>Apellidos:</strong>
-            <span>apeprueba</span>
+            <span>{perfil.apellidos}</span>
         </div>
 
         <div className="dato">
             <strong>Correo Electrónico:</strong>
-            <span>correo@ejemplo.com</span>
+            <span>{perfil.correo || "No disponible"}</span>
         </div>
 
         <button className="editar-btn">
@@ -53,26 +66,13 @@ function Profile() {
     <section className="cursos-aprobados">
         <h3>Cursos Aprobados</h3>
 
-        <div className="curso">
-            <span>Matemática 1</span>
-            <span>5 créditos</span>
-            <button>Eliminar</button>
-        </div>
-
-        <div className="curso">
-            <span>Programación 1</span>
-            <span>4 créditos</span>
-            <button>Eliminar</button>
-        </div>
-
-        <div className="curso">
-            <span>Física 1</span>
-            <span>5 créditos</span>
-            <button>Eliminar</button>
-        </div>
+        {perfil.cursos_aprobados.map((curso) => <div className="curso" key={curso.id}>
+            <span>{curso.nombre_curso}</span>
+            <span>{curso.creditos} créditos</span>
+        </div>)}
 
         <p className="total-creditos">
-            <strong>Total de créditos:</strong> 14
+            <strong>Total de créditos:</strong> {perfil.total_creditos}
         </p>
 
         <button className="agregar-btn">
