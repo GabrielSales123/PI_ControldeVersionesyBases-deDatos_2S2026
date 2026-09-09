@@ -50,9 +50,14 @@ export const crearPublicacion = async (req, res) => {
 
 export const obtenerPublicaciones = async (req, res) => {
   try {
-    const decoded = validaciones.validarToken({ req, res });
-    if (!decoded) {
-      return res.status(401).send("No autorizado. Inicie sesión para ver las publicaciones");
+    // Si se envía token, se procesa opcionalmente sin bloquear la consulta del muro
+    const token = req.cookies?.token;
+    if (token) {
+      try {
+        validaciones.validarToken({ req, res });
+      } catch (err) {
+        // Continuar para permitir visualización de publicaciones
+      }
     }
 
     const conditions = [];

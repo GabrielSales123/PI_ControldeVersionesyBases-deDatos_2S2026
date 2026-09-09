@@ -6,7 +6,7 @@ import {
   obtenerCursos,
   obtenerCursosAprobados,
   obtenerCursosAprobadosPorCarnet
-} from '../controllers/perfil.controller.js';
+} from '../controllers/perfil_cursos.controller.js';
 
 const router = Router();
 

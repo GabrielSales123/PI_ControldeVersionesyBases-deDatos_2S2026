@@ -7,7 +7,5 @@ router.post('/login', login);
 router.post('/register', register);
 router.post('/registro', register);
 router.post('/recuperar_contrasena', recuperarContrasena);
-router.post('/recuperar-contrasena', recuperarContrasena);
-router.post('/forget', recuperarContrasena);
 
 export default router;
