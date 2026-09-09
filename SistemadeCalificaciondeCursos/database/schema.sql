@@ -6,8 +6,9 @@ CREATE TABLE usuarios (
     apellidos VARCHAR(100) NOT NULL,
     contrasena VARCHAR(255) NOT NULL,
     carnet VARCHAR(20) NOT NULL UNIQUE,
+    correo VARCHAR(100),
     cursos_aprobados INT DEFAULT 0,
-    cantidad_creditos INT NOT NULL
+    cantidad_creditos INT NOT NULL DEFAULT 0
 );
 CREATE TABLE catedraticos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -19,6 +20,7 @@ CREATE TABLE cursos(
     nombre_curso VARCHAR(100) NOT NULL,
     descripcion TEXT,
     codigo_curso INT NOT NULL UNIQUE,
+    creditos INT NOT NULL DEFAULT 0,
     catedratico_id INT NOT NULL,
     aprobado BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (catedratico_id) REFERENCES catedratico(id)
@@ -28,10 +30,12 @@ CREATE TABLE publicaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     contenido TEXT NOT NULL,
     catedratico_id INT NOT NULL,
+    curso_id INT,
     fecha_publicacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     autor_id INT NOT NULL,
     FOREIGN KEY (autor_id) REFERENCES usuario(id),
     FOREIGN KEY (catedratico_id) REFERENCES catedratico(id),
+    FOREIGN KEY (curso_id) REFERENCES cursos(id),
     CONSTRAINT fk_curso_catedratico
         FOREIGN KEY (catedratico_id) REFERENCES catedratico(id)
         ON UPDATE CASCADE
