@@ -1,0 +1,68 @@
+.comentarios-page {
+    min-height: 100vh;
+    background-color: #43266b;
+
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.volver-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: #060b3b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.comentarios-page h1 {
+    text-align: start;
+    margin-bottom: 50px;
+    font-family: Arial, sans-serif;
+    font-size: 32px;
+    color: white;
+    margin-left: 100px;
+
+}
+.comentarios-page article {
+    width: 400px;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background-color: #fefeff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+    gap: 25px;
+}
+.comentarios-page section {
+    width: 400px;
+    padding: 30px;
+    background-color: #fefeff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+    gap: 10px;
+}
+.agregar-comentario textarea {
+    width: 300px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    
+}
+.agregar-comentario button {
+    padding: 10px 20px;
+    background-color: #060b3b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    gap: 10px;
+    align-self: flex-end;
+    margin: 20px;
+}

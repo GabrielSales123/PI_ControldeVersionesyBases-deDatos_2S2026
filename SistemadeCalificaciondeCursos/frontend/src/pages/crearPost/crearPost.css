@@ -1,0 +1,58 @@
+.crearPost {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(59, 26, 112);
+}
+.crearPost-container {
+    width: 400px;
+    padding: 30px;
+    background-color: #fefeff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+.crearPost-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-family: Arial, sans-serif;
+    font-size: 32px;
+}
+.crearPost-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.crearPost-container input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.crearPost-container select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.crearPost-container label {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+.crearPost-container textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    resize: vertical;
+}
+.crearPost-container button {
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #060b3b;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 80px;
+}
