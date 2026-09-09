@@ -33,7 +33,8 @@ export const mostrarPerfil = async (req, res) => {
         carnet: usuario.carnet,
         es_propio: true,
         cursos_aprobados: cursos,
-        total_creditos: totalCreditos
+        total_creditos: totalCreditos,
+        correo: usuario.correo
       });
       return;
     }
