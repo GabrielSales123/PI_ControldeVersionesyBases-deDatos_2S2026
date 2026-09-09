@@ -3,11 +3,15 @@ import { validaciones } from '../funciones.js';
 
 export const crearPublicacion = async (req, res) => {
   const { contenido } = req.body;
-  const catedratico_id = req.body.catedratico_id || req.body.catedratico;
+  const catedratico_id = req.body.catedratico_id || req.body.catedratico || null;
   const curso_id = req.body.curso_id || req.body.curso || null;
 
-  if (!contenido || !catedratico_id) {
-    return res.status(400).send("Contenido y catedrático son requeridos");
+  if (!contenido || (typeof contenido === 'string' && contenido.trim().length === 0)) {
+    return res.status(400).send("El contenido de la publicación es requerido");
+  }
+
+  if (!catedratico_id && !curso_id) {
+    return res.status(400).send("Debe especificar al menos un curso o un catedrático");
   }
 
   try {
@@ -22,25 +26,31 @@ export const crearPublicacion = async (req, res) => {
     }
     const usuario = rows[0];
 
-    try {
-      if (curso_id) {
-        await pool.query(
-          'INSERT INTO publicaciones (contenido, catedratico_id, autor_id, curso_id) VALUES (?, ?, ?, ?)',
-          [contenido, catedratico_id, usuario.id, curso_id]
-        );
-      } else {
-        await pool.query(
-          'INSERT INTO publicaciones (contenido, catedratico_id, autor_id) VALUES (?, ?, ?)',
-          [contenido, catedratico_id, usuario.id]
-        );
-      }
-    } catch (dbErr) {
-      await pool.query(
-        'INSERT INTO publicaciones (contenido, catedratico_id, autor_id) VALUES (?, ?, ?)',
-        [contenido, catedratico_id, usuario.id]
-      );
-    }
+    const catId = catedratico_id ? Number(catedratico_id) : null;
+    const curId = curso_id ? Number(curso_id) : null;
 
+    try {
+      await pool.query(
+        'INSERT INTO publicaciones (contenido, catedratico_id, curso_id, autor_id) VALUES (?, ?, ?, ?)',
+        [contenido.trim(), catId, curId, usuario.id]
+      );
+    } catch (error) {
+      if (error.code === 'ER_NO_SUCH_TABLE') {
+        return res.status(500).send("La tabla de publicaciones no existe en la base de datos");
+      } else if (error.code === 'ER_BAD_FIELD_ERROR') {
+        if (!curId && catId) {
+          await pool.query(
+            'INSERT INTO publicaciones (contenido, catedratico_id, autor_id) VALUES (?, ?, ?)',
+            [contenido.trim(), catId, usuario.id]
+          );
+        } else {
+          throw error;
+        }
+      } else {
+        throw error;
+      }
+    }
+      
     return res.status(201).send("Publicacion creada");
   } catch (error) {
     console.error(error);
@@ -120,8 +130,8 @@ export const obtenerPublicaciones = async (req, res) => {
              (SELECT COUNT(*) FROM comentarios com WHERE com.publicacion_id = p.id) AS comentarios
       FROM publicaciones p
       INNER JOIN usuarios u ON p.autor_id = u.id
-      INNER JOIN catedraticos cat ON p.catedratico_id = cat.id
-      LEFT JOIN cursos cu ON (p.curso_id = cu.id OR (p.curso_id IS NULL AND cu.catedratico_id = cat.id))
+      LEFT JOIN catedraticos cat ON p.catedratico_id = cat.id
+      LEFT JOIN cursos cu ON p.curso_id = cu.id
       ${whereClause}
       ORDER BY p.fecha_publicacion DESC
     `;
@@ -139,7 +149,7 @@ export const obtenerPublicaciones = async (req, res) => {
                (SELECT COUNT(*) FROM comentarios com WHERE com.publicacion_id = p.id) AS comentarios
         FROM publicaciones p
         INNER JOIN usuarios u ON p.autor_id = u.id
-        INNER JOIN catedraticos cat ON p.catedratico_id = cat.id
+        LEFT JOIN catedraticos cat ON p.catedratico_id = cat.id
         LEFT JOIN cursos cu ON cu.catedratico_id = cat.id
         ${whereClause}
         ORDER BY p.fecha_publicacion DESC

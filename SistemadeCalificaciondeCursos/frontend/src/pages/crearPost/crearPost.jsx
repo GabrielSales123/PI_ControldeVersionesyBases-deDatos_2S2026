@@ -30,7 +30,7 @@ function CrearPost() {
                 : catedraticos.find((catedratico) => String(catedratico.id) === entidad);
             await api.createPost({
                 contenido,
-                catedratico_id: tipo === "Curso" ? seleccion.catedratico_id : seleccion.id,
+                catedratico_id: tipo === "Catedrático" ? seleccion.id : null,
                 curso_id: tipo === "Curso" ? seleccion.id : null
             });
             navigate("/home");

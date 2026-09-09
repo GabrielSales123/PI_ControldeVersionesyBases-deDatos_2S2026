@@ -89,15 +89,19 @@ function Home() {
 
                             <h3>{publicacion.autor_nombres} {publicacion.autor_apellidos}</h3>
 
-                            <p>
-                                <strong>Curso:</strong>{" "}
-                                {publicacion.nombre_curso || "No especificado"}
-                            </p>
+                            {publicacion.nombre_curso && (
+                                <p>
+                                    <strong>Curso:</strong>{" "}
+                                    {publicacion.nombre_curso}
+                                </p>
+                            )}
 
-                            <p>
-                                <strong>Catedrático:</strong>{" "}
-                                {publicacion.catedratico_nombres} {publicacion.catedratico_apellidos}
-                            </p>
+                            {publicacion.catedratico_nombres && (
+                                <p>
+                                    <strong>Catedrático:</strong>{" "}
+                                    {publicacion.catedratico_nombres} {publicacion.catedratico_apellidos}
+                                </p>
+                            )}
 
                             <p className="mensaje">
                                 "{publicacion.contenido}"

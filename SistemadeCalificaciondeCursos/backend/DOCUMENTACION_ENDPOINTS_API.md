@@ -367,19 +367,36 @@ GET /publicaciones?buscar_curso=bases&buscar_catedratico=alvaro
 ---
 
 ### 4.2. Crear Publicación
-Permite al usuario autenticado publicar en el muro.
+Permite al usuario autenticado publicar en el muro. Puede ser sobre un profesor (sin curso), sobre un curso (sin profesor), o sobre ambos (al menos uno debe estar presente).
 
 - **Método:** `POST`
 - **Ruta:** `/publicaciones`
 - **Headers:** `Content-Type: application/json`
 - **Requiere Cookie:** Sí
 
-#### Body (JSON):
+#### Body (JSON) - Opciones válidas:
+**Opción A (Ambos):**
 ```json
 {
   "contenido": "Recomiendo repasar teoría de conjuntos antes del curso con el Lic. Zapeta.",
   "catedratico_id": 4,
   "curso_id": 6
+}
+```
+
+**Opción B (Solo Profesor, sin curso):**
+```json
+{
+  "contenido": "Excelente catedrático, muy atento con las dudas de los estudiantes.",
+  "catedratico_id": 2
+}
+```
+
+**Opción C (Solo Curso, sin profesor):**
+```json
+{
+  "contenido": "El curso de Estructuras de Datos requiere bastante tiempo de laboratorio.",
+  "curso_id": 3
 }
 ```
 

@@ -68,21 +68,25 @@ function Comentarios() {
 
                 <h3>{publicacion.usuario}</h3>
 
-                <p>
-                    <strong>Curso:</strong>{" "}
-                    {publicacion.curso}
-                </p>
+                {(publicacion.curso) && (
+                    <p>
+                        <strong>Curso:</strong>{" "}
+                        {publicacion.curso}
+                    </p>
+                )}
 
-                <p>
-                    <strong>Catedrático:</strong>{" "}
-                    {publicacion.catedratico}
-                </p>
+                {(publicacion.catedratico) && (
+                    <p>
+                        <strong>Catedrático:</strong>{" "}
+                        {publicacion.catedratico}
+                    </p>
+                )}
 
                 <p className="mensaje">
                     "{publicacion.contenido}"
                 </p>
 
-                <span>{publicacion.fecha}</span>
+                <span>{publicacion.fecha_publicacion}</span>
 
             </article>
 
