@@ -33,12 +33,9 @@
 
 ## 2. Estructura de la Base de Datos
 
-- **usuarios**: `id`, `nombres`, `apellidos`, `contrasena`, `carnet`, `correo`, `cursos_aprobados`, `cantidad_creditos`.
-- **catedraticos**: `id`, `nombres`, `apellidos`.
-- **cursos**: `id`, `nombre_curso`, `descripcion`, `codigo_curso`, `creditos`, `catedratico_id`, `aprobado`.
-- **publicaciones**: `id`, `contenido`, `catedratico_id`, `fech_publicacion`, `autor_id`, `curso_id`.
-- **comentarios**: `id`, `contenido`, `fecha_comentario`, `id_usuario`, `publicacion_id`.
-- **cursos_aprobados**: `usuario_id`, `curso_id`.
+### Diagrama ER
+![Diagrama ER](./images/Diagrama_ER.png)
+
 
 ## 3. Arquitectura del Backend
 
