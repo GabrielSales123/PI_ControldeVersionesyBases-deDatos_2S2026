@@ -1,46 +1,36 @@
 import "./home.css";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../api";
 
 function Home() {
     const navigate = useNavigate();
-    const publicaciones = [
-        {
-            id: 1,
-            usuario: "Juan Pérez",
-            curso: "Programación 1",
-            catedratico: "Juan Lopez",
-            contenido: "Mi opinión sobre el curso es que esta muy interesante :v",
-            fecha: "05/09/2026 18:30",
-            comentarios: 3
-        },
-        {
-            id: 2,
-            usuario: "María López",
-            curso: "Matemática 1",
-            catedratico: "Ing Garcia",
-            contenido: "El curso me pareció interesante debido a que es muy interesante ",
-            fecha: "05/09/2026 17:45",
-            comentarios: 5
-        },
-        {
-            id: 3,
-            usuario: "María López",
-            curso: "Matemática 1",
-            catedratico: "Ing Garcia",
-            contenido: "El curso me pareció interesante debido a que es muy interesante ",
-            fecha: "05/09/2026 17:45",
-            comentarios: 5
-        },
-        {
-            id: 4,
-            usuario: "María López",
-            curso: "Matemática 1",
-            catedratico: "Ing Garcia",
-            contenido: "El curso me pareció interesante debido a que es muy interesante ",
-            fecha: "05/09/2026 17:45",
-            comentarios: 5
-        }
-    ];
+    const [publicaciones, setPublicaciones] = useState([]);
+    const [cursos, setCursos] = useState([]);
+    const [catedraticos, setCatedraticos] = useState([]);
+    const [buscar, setBuscar] = useState("");
+    const [curso, setCurso] = useState("");
+    const [catedratico, setCatedratico] = useState("");
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        Promise.all([api.getCourses(), api.getProfessors()])
+            .then(([courses, professors]) => {
+                setCursos(courses);
+                setCatedraticos(professors);
+            })
+            .catch((requestError) => setError(requestError.message));
+    }, []);
+
+    useEffect(() => {
+        const params = new URLSearchParams();
+        if (buscar) params.set("q", buscar);
+        if (curso) params.set("curso_id", curso);
+        if (catedratico) params.set("catedratico_id", catedratico);
+        api.getPosts(params.toString())
+            .then(setPublicaciones)
+            .catch((requestError) => setError(requestError.message));
+    }, [buscar, curso, catedratico]);
 
     return (
         <div className="home">
@@ -61,22 +51,22 @@ function Home() {
                     <input
                         type="text"
                         placeholder="🔎 Buscar..."
+                        value={buscar}
+                        onChange={(e) => setBuscar(e.target.value)}
                     />
                 </div>
 
                 {/* Filtros */}
                 <div className="filtros">
 
-                    <select>
-                        <option>Todos los cursos</option>
-                        <option>Programación 1</option>
-                        <option>Matemática 1</option>
+                    <select value={curso} onChange={(e) => setCurso(e.target.value)}>
+                        <option value="">Todos los cursos</option>
+                        {cursos.map((item) => <option key={item.id} value={item.id}>{item.nombre_curso}</option>)}
                     </select>
 
-                    <select>
-                        <option>Todos los catedráticos</option>
-                        <option>XXXXX</option>
-                        <option>YYYYY</option>
+                    <select value={catedratico} onChange={(e) => setCatedratico(e.target.value)}>
+                        <option value="">Todos los catedráticos</option>
+                        {catedraticos.map((item) => <option key={item.id} value={item.id}>{item.nombres} {item.apellidos}</option>)}
                     </select>
 
                 </div>
@@ -92,28 +82,33 @@ function Home() {
                 <section className="publicaciones">
 
                     <h2>PUBLICACIONES</h2>
+                    {error && <p role="alert">{error}</p>}
 
                     {publicaciones.map((publicacion) => (
                         <article className="publicacion" key={publicacion.id}>
 
-                            <h3>{publicacion.usuario}</h3>
+                            <h3>{publicacion.autor_nombres} {publicacion.autor_apellidos}</h3>
 
-                            <p>
-                                <strong>Curso:</strong>{" "}
-                                {publicacion.curso}
-                            </p>
+                            {publicacion.nombre_curso && (
+                                <p>
+                                    <strong>Curso:</strong>{" "}
+                                    {publicacion.nombre_curso}
+                                </p>
+                            )}
 
-                            <p>
-                                <strong>Catedrático:</strong>{" "}
-                                {publicacion.catedratico}
-                            </p>
+                            {publicacion.catedratico_nombres && (
+                                <p>
+                                    <strong>Catedrático:</strong>{" "}
+                                    {publicacion.catedratico_nombres} {publicacion.catedratico_apellidos}
+                                </p>
+                            )}
 
                             <p className="mensaje">
                                 "{publicacion.contenido}"
                             </p>
 
                             <div className="publicacion-footer">
-                                <span>{publicacion.fecha}</span>
+                                <span>{new Date(publicacion.fecha_publicacion).toLocaleString()}</span>
 
                                 <button onClick={() => navigate("/comentarios", {
                                  state: { publicacion: publicacion }

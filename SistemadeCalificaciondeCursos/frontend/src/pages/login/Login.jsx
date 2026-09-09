@@ -1,16 +1,29 @@
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { api } from "../../api";
 
 
 function Login() {
 
   const navigate = useNavigate();
+  const [carnet, setCarnet] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    // Temporalmente no se verifica
-    navigate("/home");
+    setError("");
+    setCargando(true);
+    try {
+      await api.login({ carnet, contrasena });
+      navigate("/home");
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setCargando(false);
+    }
   }
   
 
@@ -22,14 +35,15 @@ function Login() {
       <p>Inicie los datos para ingresar: </p>
 
       <form onSubmit={handleLogin}>
-          <input type="text" placeholder="Registro Académico" />
-        <input type="password" placeholder="Contraseña" />
+          <input type="text" placeholder="Registro Académico" value={carnet} onChange={(e) => setCarnet(e.target.value)} required />
+        <input type="password" placeholder="Contraseña" value={contrasena} onChange={(e) => setContrasena(e.target.value)} required />
+        {error && <p role="alert">{error}</p>}
         <p>
           ¿No tienes una cuenta? <a href="./registro">Registrate</a>
           <br />
           ¿Olvidaste tu contraseña? <a href="./forget">Recuperar</a>
         </p>
-        <button type="submit">Iniciar Sesión</button>
+        <button type="submit" disabled={cargando}>{cargando ? "Ingresando..." : "Iniciar Sesión"}</button>
       </form>
     </div>
     </div>

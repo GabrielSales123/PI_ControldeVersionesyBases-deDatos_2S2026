@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../api";
 import "./crearPost.css";
 
 function CrearPost() {
@@ -7,17 +8,35 @@ function CrearPost() {
     const [tipo, setTipo] = useState("Curso");
     const [entidad, setEntidad] = useState("");
     const [contenido, setContenido] = useState("");
+    const [cursos, setCursos] = useState([]);
+    const [catedraticos, setCatedraticos] = useState([]);
+    const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        Promise.all([api.getCourses(), api.getProfessors()])
+            .then(([courses, professors]) => {
+                setCursos(courses);
+                setCatedraticos(professors);
+            })
+            .catch((requestError) => setError(requestError.message));
+    }, []);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const nuevaPublicacion = {
-            tipo: tipo,
-            entidad: entidad,
-            contenido: contenido,
-            fecha: new Date().toLocaleString()
-        };
-        console.log(nuevaPublicacion);
-        navigate("/home");
+        setError("");
+        try {
+            const seleccion = tipo === "Curso"
+                ? cursos.find((curso) => String(curso.id) === entidad)
+                : catedraticos.find((catedratico) => String(catedratico.id) === entidad);
+            await api.createPost({
+                contenido,
+                catedratico_id: tipo === "Catedrático" ? seleccion.id : null,
+                curso_id: tipo === "Curso" ? seleccion.id : null
+            });
+            navigate("/home");
+        } catch (requestError) {
+            setError(requestError.message);
+        }
     };
 
 
@@ -43,17 +62,14 @@ function CrearPost() {
                         : "Selecciona el catedrático"}
                 </label>
 
-                <input
-                    type="text"
-                    placeholder={
-                        tipo === "Curso"
-                            ? "Nombre del curso"
-                            : "Nombre del catedrático"
-                    }
-                    value={entidad}
-                    onChange={(e) => setEntidad(e.target.value)}
-                    required
-                />
+                <select value={entidad} onChange={(e) => setEntidad(e.target.value)} required>
+                    <option value="">Selecciona una opción</option>
+                    {(tipo === "Curso" ? cursos : catedraticos).map((item) => (
+                        <option key={item.id} value={item.id}>
+                            {tipo === "Curso" ? item.nombre_curso : `${item.nombres} ${item.apellidos}`}
+                        </option>
+                    ))}
+                </select>
 
 
                 <label>Tu opinión</label>
@@ -64,6 +80,7 @@ function CrearPost() {
                     onChange={(e) => setContenido(e.target.value)}
                     required
                 />
+                {error && <p role="alert">{error}</p>}
 
 
                 <div className="buttons">
