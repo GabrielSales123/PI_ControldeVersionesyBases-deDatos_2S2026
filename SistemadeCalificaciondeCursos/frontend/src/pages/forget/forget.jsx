@@ -3,7 +3,7 @@ import { useState } from "react";
 import { api } from "../../api";
 
 function Forget() {
-    const [form, setForm] = useState({ carnet: "", correo: "" });
+    const [form, setForm] = useState({ carnet: "", correo: "", nueva_contrasena: "" });
     const [mensaje, setMensaje] = useState("");
     const [error, setError] = useState("");
 
@@ -29,6 +29,7 @@ function Forget() {
                     <input type="email" placeholder="Correo Electrónico" value={form.correo} onChange={(e) => setForm({ ...form, correo: e.target.value })} required />
                     {mensaje && <p role="status">{mensaje}</p>}
                     {error && <p role="alert">{error}</p>}
+                    <input type="password" placeholder="Nueva Contraseña" value={form.nueva_contrasena} onChange={(e) => setForm({ ...form, nueva_contrasena: e.target.value })} required />
                     <button type="submit">Recuperar</button>
                 </form>
             </div>

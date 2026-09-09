@@ -68,8 +68,12 @@ export const recuperarContrasena = async (req, res) => {
   const correo = req.body.correo || req.body.email;
   const nueva_contrasena = req.body.nueva_contrasena || req.body.contrasena || req.body.pass || req.body.nueva_clave;
 
-  if (!carnet || !correo) {
+  if (typeof carnet !== 'string' || carnet.trim() === '' || typeof correo !== 'string' || correo.trim() === '') {
     return res.status(400).send("El registro académico y el correo electrónico son requeridos");
+  }
+
+  if (typeof nueva_contrasena !== 'string' || nueva_contrasena.trim() === '') {
+    return res.status(400).send("La nueva contraseña no puede estar vacía");
   }
 
   try {
@@ -85,19 +89,9 @@ export const recuperarContrasena = async (req, res) => {
       return res.status(400).send("Los datos proporcionados no coinciden con nuestros registros");
     }
 
-    if (nueva_contrasena) {
-      if (typeof nueva_contrasena !== 'string' || nueva_contrasena.trim().length === 0) {
-        return res.status(400).send("La nueva contraseña no puede estar vacía");
-      }
-      //const hashedPassword = await bcrypt.hash(nueva_contrasena, SALT_ROUNDS);
-      await pool.query('UPDATE usuarios SET contrasena = ? WHERE carnet = ?', [nueva_contrasena, carnet]);
-      return res.status(200).send("Contraseña restablecida exitosamente");
-    }
-
-    return res.status(200).json({
-      valido: true,
-      message: "Datos verificados correctamente. Puede ingresar la nueva contraseña."
-    });
+    //const hashedPassword = await bcrypt.hash(nueva_contrasena, SALT_ROUNDS);
+    await pool.query('UPDATE usuarios SET contrasena = ? WHERE carnet = ?', [nueva_contrasena, carnet]);
+    return res.status(200).send("Contraseña restablecida exitosamente");
   } catch (error) {
     console.error(error);
     return res.status(500).send("Error al procesar la recuperación de contraseña");
